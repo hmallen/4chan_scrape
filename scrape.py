@@ -2,8 +2,7 @@ from bs4 import BeautifulSoup
 from requests import get
 import os
 import time
-
-# scape http://boards.4chan.org/pol/ next
+import sys
 
 
 class Scraper(object):
@@ -24,12 +23,15 @@ class Scraper(object):
 
             filename = image_url.split('/')[-1]
             file_path = os.path.abspath(os.path.join(folder_name, filename))
+            if file_path.endswith('webm'):
+                #print('Skipping .webm file: ' + file_path)
+                return
 
             # skipping already downloaded images
             if not os.path.isfile(file_path):
                 image_request = get(image_url)
                 if image_request.status_code in (200, 304):
-                    print 'Scraping ' + str(index + 1) + '/' + str(len(image_links)) + ' from thread ' + threadid + '. Local filename: ' + filename
+                    print 'Scraping /' + boardname + '/ ' + str(index + 1) + '/' + str(len(image_links)) + ' from thread ' + threadid + '. Local filename: ' + filename
 
                     with open(file_path, 'wb') as output:
                         output.write(image_request.content)
@@ -53,7 +55,13 @@ class Scraper(object):
             self.parse_thread_ids(threads, boardname)
 
 if __name__ == '__main__':
+    board_name = sys.argv[1]
     while True:
-        Scraper().start('pol')
-        Scraper().start('b')
+        Scraper().start(board_name)
+        #Scraper().start('b')
+	#Scraper().start('g')
+	#Scraper().start('tv')
+	#Scraper().start('s')
+	#Scraper().start('hc')
+	#Scraper().start('fit')
         time.sleep(30)
