@@ -21,7 +21,8 @@ class Scraper(object):
             original_image_url = 'http://' + link.contents[0]
             filename = original_image_url.split('/')[-1]
             file_path = os.path.abspath(os.path.join(folder_name, filename))
-            if not os.path.isfile(file_path):
+            filename_suffix, file_extension = os.path.splitext(filename)
+            if not os.path.isfile(file_path) and len(file_extension) is 4:
                 image_request = get(original_image_url)
                 if image_request.status_code in (200, 304):
 
@@ -35,6 +36,6 @@ class Scraper(object):
 
 if __name__ == '__main__':
     s = Scraper()
-    for i in xrange(100):
+    for i in xrange(1000):
         url = 'http://www.ffffound.com/?offset=' + str(i*25) + '&'
         s.scrape(url, 'ffffound_images')
