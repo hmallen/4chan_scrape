@@ -58,10 +58,3 @@ if __name__ == '__main__':
     board_name = sys.argv[1]
     while True:
         Scraper().start(board_name)
-        #Scraper().start('b')
-	#Scraper().start('g')
-	#Scraper().start('tv')
-	#Scraper().start('s')
-	#Scraper().start('hc')
-	#Scraper().start('fit')
-        time.sleep(30)
