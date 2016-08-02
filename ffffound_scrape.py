@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from requests import get
+from requests import ConnectionError
 import os
 import time
 import sys
@@ -23,14 +24,17 @@ class Scraper(object):
             file_path = os.path.abspath(os.path.join(folder_name, filename))
             filename_suffix, file_extension = os.path.splitext(filename)
             if not os.path.isfile(file_path) and len(file_extension) is 4:
-                image_request = get(original_image_url)
-                if image_request.status_code in (200, 304):
+                try:
+                    image_request = get(original_image_url)
+                    if image_request.status_code in (200, 304):
 
-                    print('Downloading image from ' + original_image_url)
-                    #print 'Scraping /' + boardname + '/ ' + str(index + 1) + '/' + str(len(image_links)) + ' from thread ' + threadid + '. Local filename: ' + filename
+                        print('Downloading image from ' + original_image_url)
+                        #print 'Scraping /' + boardname + '/ ' + str(index + 1) + '/' + str(len(image_links)) + ' from thread ' + threadid + '. Local filename: ' + filename
 
-                    with open(file_path, 'wb') as output:
-                        output.write(image_request.content)
+                        with open(file_path, 'wb') as output:
+                            output.write(image_request.content)
+                except ConnectionError as e:
+                    print('Couldn\'t download image ' + original_image_url)
             else:
                 print('Skipping file ' + original_image_url)
 
